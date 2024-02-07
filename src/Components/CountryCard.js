@@ -1,9 +1,17 @@
 import { useState, useEffect } from 'react';
+import { Link } from "react-router-dom";
+import Filters from "./Filters";
 
-const CountryCard = () => {
+
+
+const CountryCard = ({countrySelection}) => {
     const [country, setCountry] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const handleSelection = (CountryID) => {
+        countrySelection(CountryID);
+    }
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -14,7 +22,6 @@ const CountryCard = () => {
                     throw new Error(`HTTP Error! Status: ${response.status}`);
                 }
                 const result = await response.json();
-                const firstCountry = result[0];
                 setCountry(result);
             }
          catch(err) {
@@ -29,15 +36,26 @@ const CountryCard = () => {
 
 return(
     <>
+        <Filters />
         {loading && <p>Loading...</p>}
         {error && <p>Error: {error}</p>}
         {country && (
-            <ul className="text-sm flex-col justify-center w-full">
+            <ul className="text-sm flex flex-col justify-center w-full px-6">
                 {country.map((item, index) => (
-                    <li key={index}>
-                        <img src={item.flags.png}></img>
-                        <p>{item.name?.common}</p>
-                    </li>
+                    
+                    <div key={index} className="mx-auto bg-white mb-12 pb-12 rounded-md shadow-md">
+                        <Link to="/SingleCountry" onClick={() => handleSelection(item.name?.common)}>
+                        <li>
+                            
+                            <img src={item.flags.png} className="rounded-t-md"></img>
+                            <h1 className="text-lg my-4 pl-6 font-extrabold">{item.name?.common}</h1>
+                            <p className="pl-6"><span className="font-bold">Population:</span>&nbsp;&nbsp;{item.population.toLocaleString()}</p>
+                            <p className="pl-6 mt-2"><span className="font-bold">Region:</span>&nbsp;&nbsp;{item.region}</p>
+                            <p className="pl-6 mt-2"><span className="font-bold">Capitol:</span>&nbsp;&nbsp;{item.capital}</p>
+                        </li>
+                        </Link>
+                    </div>
+                    
                 ))}
                 
             </ul>

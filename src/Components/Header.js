@@ -20,7 +20,6 @@ return (
                 </button>
             </div>
         </header>
-        <Filters />
     </>
 );}
 

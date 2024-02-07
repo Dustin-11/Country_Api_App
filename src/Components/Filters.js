@@ -21,7 +21,7 @@ const Filters = () => {
         <div className="text-darkGray text-sm">
             {/* <label htmlFor="regions">Filter by Region</label> */}
             <select id="regions" name="regions" value={region} onChange={changeRegion}
-            className="mt-5 mb-5 p-2 rounded-md shadow-lg text-xs ">
+            className="mt-5 mb-7 p-2 rounded-md shadow-lg text-xs ">
                 <option value="" disabled hidden >Filter by Region</option>
                 <option value="All">All</option>
                 <option value="Africa">Africa</option>
