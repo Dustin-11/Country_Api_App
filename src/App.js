@@ -11,7 +11,6 @@ function App() {
   const HandleCountrySelection = (Selection) => {
     setSharedData(Selection);
   }
-  console.log(sharedData);
   return (
     <>
       <Header />

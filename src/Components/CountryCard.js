@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { Link } from "react-router-dom";
 import Filters from "./Filters";
 
@@ -6,15 +6,20 @@ import Filters from "./Filters";
 
 const CountryCard = ({countrySelection}) => {
     const [country, setCountry] = useState([]);
+    const [allCountries, setAllCountries] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [region, setRegion] = useState("");
+    const [region, setRegion] = useState("all");
+    const [searching, setSearching] = useState("");
+    const isFirstRender = useRef(true);
     const handleSelection = (CountryID) => {
         countrySelection(CountryID);
     }
     const handleRegionSelection = (regionSel) => {
         setRegion(regionSel);
-        console.log(region);
+    }
+    const handleSearch = (typedSearch) => {
+        setSearching(typedSearch);
     }
 
 
@@ -28,6 +33,7 @@ const CountryCard = ({countrySelection}) => {
                 }
                 const result = await response.json();
                 setCountry(result);
+                setAllCountries(result);
             }
          catch(err) {
             console.error('Error fetching data:', err);
@@ -41,36 +47,59 @@ const CountryCard = ({countrySelection}) => {
 
     useEffect(() => {
         const fetchRegion = async () => {
+            let response;
             try {
-                const response = await fetch(`https://restcountries.com/v3.1/region/${region}`);
+                
+                if(isFirstRender.current) {
+                    isFirstRender.current = false;
+                }
+                else {
+                    if(region.length > 3) {
+                        response = await fetch(`https://restcountries.com/v3.1/region/${region}`);
+                    }
+                    else {
+                        response = await fetch('https://restcountries.com/v3.1/all');
+                    }
                 if(!response.ok) {
                     throw new Error(`HTTP Error! Status: ${response.status}`);
                 }
                 const data = await response.json();
                 setCountry([]);
+                setAllCountries([]);
                 setCountry(data);
+                setAllCountries(data);
+                } 
             }
             catch(err) {
                 console.error('Error fetching data:', err);
-                setError('Error fetching data. Please try again.')
+                setError('Error fetching data. Please try again.');
             }
             finally {
                 setLoading(false);
             }
         };
         fetchRegion();
-    }, [region])
+    }, [region]);
+    
+    useEffect(() => {
+        const searchCountries = () => {
+           const filtered = allCountries.filter(count => count.name?.common.toLowerCase().includes(searching.toLowerCase()));
+           console.log(searching);
+           setCountry(filtered);
+        }
+        searchCountries();
+    }, [searching]);
 
 return(
     <>
-        <Filters regionSelection={handleRegionSelection}/>
+        <Filters regionSelection={handleRegionSelection} search={handleSearch}/>
         {loading && <p>Loading...</p>}
         {error && <p>Error: {error}</p>}
         {country && (
-            <ul className="text-sm text-darkBlue flex flex-col sm:flex-wrap sm:flex-row justify-center sm:justify-between w-full px-6">
+            <ul className="text-sm text-darkBlue flex flex-col sm:flex-wrap sm:flex-row justify-center m:justify-center lg:justify-start w-full px-6">
                 {country.map((item, index) => (
                     
-                    <div key={index} className="mx-auto bg-white mb-12 pb-12 rounded-md shadow-lg w-4/5 sm:w-5/12 lg:w-[30%] xl:w-[22%]">
+                    <div key={index} className="mx-auto bg-white mb-12 pb-12 rounded-md shadow-lg w-4/5 sm:w-5/12 lg:w-[30%] xl:w-[22%] lg:mx-0 lg:ml-7 xl:ml-9">
                         <Link to="/SingleCountry" onClick={() => handleSelection(item.name?.common)}>
                         <li className="flex flex-col h-full">
                             
@@ -82,7 +111,6 @@ return(
                         </li>
                         </Link>
                     </div>
-                    
                 ))}
                 
             </ul>

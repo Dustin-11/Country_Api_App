@@ -1,15 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 
-const Filters = ({regionSelection}) => {
+const Filters = ({regionSelection, search}) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [region, setRegion] = useState("");
     const changeRegion = (e) => {
         const selectedRegion = e.target.value;
         setRegion(selectedRegion);
         regionSelection(selectedRegion.toLowerCase());
+        setSearchTerm("");
     }
     const updateTerm = (e) => {
-        setSearchTerm(e.target.value);
+        const searchWord = e.target.value;
+        setSearchTerm(searchWord);
+        search(searchWord);
     }
 
     return (
@@ -18,7 +21,7 @@ const Filters = ({regionSelection}) => {
             <span className="pr-4">
                 <i className="material-icons pt-1">search</i>
             </span>
-            <input className="pl-2 w-full text-xs lg:text-lg" placeholder="Search for a country..." onChange={updateTerm}></input>
+            <input className="pl-2 w-full text-xs lg:text-lg" value={searchTerm} placeholder="Search for a country..." onChange={updateTerm}></input>
         </div>
         <div className="text-darkGray">
             <select id="regions" name="regions" value={region} onChange={changeRegion}
@@ -27,6 +30,7 @@ const Filters = ({regionSelection}) => {
                 <option value="All">All</option>
                 <option value="Africa">Africa</option>
                 <option value="Americas">Americas</option>
+                <option value = "Antarctic">Antarctic</option>
                 <option value="Asia">Asia</option>
                 <option value="Europe">Europe</option>
                 <option value="Oceania">Oceania</option>
