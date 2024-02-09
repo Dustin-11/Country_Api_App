@@ -1,10 +1,12 @@
 import { useState, useEffect } from "react";
 
-const Filters = () => {
+const Filters = ({regionSelection}) => {
     const [searchTerm, setSearchTerm] = useState("");
     const [region, setRegion] = useState("");
     const changeRegion = (e) => {
-        setRegion(e.target.value);
+        const selectedRegion = e.target.value;
+        setRegion(selectedRegion);
+        regionSelection(selectedRegion.toLowerCase());
     }
     const updateTerm = (e) => {
         setSearchTerm(e.target.value);
@@ -16,12 +18,11 @@ const Filters = () => {
             <span className="pr-4">
                 <i className="material-icons pt-1">search</i>
             </span>
-            <input className="pl-2 w-full text-xs" placeholder="Search for a country..." onChange={updateTerm}></input>
+            <input className="pl-2 w-full text-xs lg:text-lg" placeholder="Search for a country..." onChange={updateTerm}></input>
         </div>
-        <div className="text-darkGray text-sm">
-            {/* <label htmlFor="regions">Filter by Region</label> */}
+        <div className="text-darkGray">
             <select id="regions" name="regions" value={region} onChange={changeRegion}
-            className="mt-5 mb-7 p-2 rounded-md shadow-lg text-xs ">
+            className="mt-5 mb-7 p-2 rounded-md shadow-lg text-xs lg:text-lg">
                 <option value="" disabled hidden >Filter by Region</option>
                 <option value="All">All</option>
                 <option value="Africa">Africa</option>

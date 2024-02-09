@@ -8,8 +8,13 @@ const CountryCard = ({countrySelection}) => {
     const [country, setCountry] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [region, setRegion] = useState("");
     const handleSelection = (CountryID) => {
         countrySelection(CountryID);
+    }
+    const handleRegionSelection = (regionSel) => {
+        setRegion(regionSel);
+        console.log(region);
     }
 
 
@@ -34,21 +39,43 @@ const CountryCard = ({countrySelection}) => {
     fetchData();
 }, []);
 
+    useEffect(() => {
+        const fetchRegion = async () => {
+            try {
+                const response = await fetch(`https://restcountries.com/v3.1/region/${region}`);
+                if(!response.ok) {
+                    throw new Error(`HTTP Error! Status: ${response.status}`);
+                }
+                const data = await response.json();
+                setCountry([]);
+                setCountry(data);
+            }
+            catch(err) {
+                console.error('Error fetching data:', err);
+                setError('Error fetching data. Please try again.')
+            }
+            finally {
+                setLoading(false);
+            }
+        };
+        fetchRegion();
+    }, [region])
+
 return(
     <>
-        <Filters />
+        <Filters regionSelection={handleRegionSelection}/>
         {loading && <p>Loading...</p>}
         {error && <p>Error: {error}</p>}
         {country && (
-            <ul className="text-sm flex flex-col justify-center w-full px-6">
+            <ul className="text-sm text-darkBlue flex flex-col sm:flex-wrap sm:flex-row justify-center sm:justify-between w-full px-6">
                 {country.map((item, index) => (
                     
-                    <div key={index} className="mx-auto bg-white mb-12 pb-12 rounded-md shadow-md">
+                    <div key={index} className="mx-auto bg-white mb-12 pb-12 rounded-md shadow-lg w-4/5 sm:w-5/12 lg:w-[30%] xl:w-[22%]">
                         <Link to="/SingleCountry" onClick={() => handleSelection(item.name?.common)}>
-                        <li>
+                        <li className="flex flex-col h-full">
                             
-                            <img src={item.flags.png} className="rounded-t-md"></img>
-                            <h1 className="text-lg my-4 pl-6 font-extrabold">{item.name?.common}</h1>
+                            <img src={item.flags.png} className="rounded-t-md h-1/2"></img>
+                            <h1 className="text-lg my-4 pl-6 font-extrabold w-4/5">{item.name?.common}</h1>
                             <p className="pl-6"><span className="font-bold">Population:</span>&nbsp;&nbsp;{item.population.toLocaleString()}</p>
                             <p className="pl-6 mt-2"><span className="font-bold">Region:</span>&nbsp;&nbsp;{item.region}</p>
                             <p className="pl-6 mt-2"><span className="font-bold">Capitol:</span>&nbsp;&nbsp;{item.capital}</p>
