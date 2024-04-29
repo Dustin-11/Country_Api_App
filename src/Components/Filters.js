@@ -21,11 +21,11 @@ const Filters = ({regionSelection, search}) => {
             <span className="pr-4">
                 <i className="material-icons pt-1">search</i>
             </span>
-            <input className="pl-2 w-full text-xs lg:text-lg" value={searchTerm} placeholder="Search for a country..." onChange={updateTerm}></input>
+            <input className="pl-2 w-full text-xs lg:text-lg focus:outline-none" value={searchTerm} placeholder="Search for a country..." onChange={updateTerm}></input>
         </div>
         <div className="text-darkGray">
             <select id="regions" name="regions" value={region} onChange={changeRegion}
-            className="mt-5 mb-7 p-2 rounded-md shadow-lg text-xs lg:text-lg">
+            className="mt-5 mb-7 p-2 rounded-md shadow-lg text-xs lg:text-lg hover:cursor-pointer focus:outline-none">
                 <option value="" disabled hidden >Filter by Region</option>
                 <option value="All">All</option>
                 <option value="Africa">Africa</option>

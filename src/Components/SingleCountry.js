@@ -5,8 +5,6 @@ const SingleCountry = ({sharedData}) => {
     
     const [country, setCountry] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState(null);
-    const [borderCountries, setBorderCountries] = useState([]);
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -20,7 +18,6 @@ const SingleCountry = ({sharedData}) => {
             }
             catch (err) {
                 console.error('Error fetching data:', err);
-                setError('Error fetching data. Please try again.')
             }
             finally {
                 setLoading(false);
@@ -28,19 +25,6 @@ const SingleCountry = ({sharedData}) => {
         };
         fetchData();
     }, [sharedData]);
-    // useEffect(() => {
-    //     const getBorderCountries = async () => {
-    //         const promises = Object.values(country.map(async (item) => {
-    //             const response = await fetch(`https://restcountries.com/v3.1/alpha?codes=${item}`);
-    //             const data = await response.json();
-    //             return data;
-    //         }));
-    //         const result = await Promise.all(promises);
-    //         console.log(country);
-    //         console.log(result);
-    //     }
-    //     // getBorderCountries();
-    // }, [country]);
     return (
         <>
             {loading && <p>Loading...</p>}
