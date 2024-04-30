@@ -1,5 +1,4 @@
 import { useState } from "react";
-import Filters from "./Filters";
 
 const Header = () => {
     const [theme, setTheme] = useState(false);

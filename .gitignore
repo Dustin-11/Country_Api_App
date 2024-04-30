@@ -11,6 +11,8 @@
 # production
 /build
 
+/fm-guide
+
 # misc
 .DS_Store
 .env.local
